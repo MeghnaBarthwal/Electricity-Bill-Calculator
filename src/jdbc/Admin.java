@@ -7,7 +7,89 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class JDBC1 {
+public class Admin {
+	public static void generateBillsForACity() throws ClassNotFoundException, SQLException {
+		int totalCommercialUnits = 0, totalCommercialAmount = 0;
+		int totalDomesticUnits = 0, totalDomesticAmount = 0;
+		Connection con = MyConnection.getConnection();
+		Statement st = con.createStatement();
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String city;
+		System.out.print("Enter city to generate bills : ");
+		city = sc.nextLine();
+		String cityUpper = city.toUpperCase();
+		System.out.println("----------------"+cityUpper+" BILL------------------");
+		ResultSet result = st.executeQuery(" select c.consumerid,b.billid,b.unitsconsume,c.connectiontype,c.consumername,b.year,b.month,c.area from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"+city+"'");
+		while(result.next()) {
+			System.out.println("Bill Number : "+result.getInt("billid"));
+			System.out.println("Consumer id : "+result.getInt("consumerid"));
+			System.out.println("Consumer name is : "+result.getString("consumername"));
+			System.out.println("Connection Type is : "+result.getString("connectiontype"));
+			System.out.println("Year : "+result.getInt("year"));
+			System.out.println("Month : "+result.getString("month"));
+			System.out.println("Units Consumed : "+result.getInt("unitsconsume"));
+			if(result.getString("connectiontype").equalsIgnoreCase("domestic")) {
+				int n = 2*result.getInt("unitsconsume");
+				totalDomesticAmount = totalDomesticAmount + n;
+				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsume");
+			}
+			if(result.getString("connection").equalsIgnoreCase("commercial")) {
+				int num = 4*result.getInt("unitssonsume");
+				totalCommercialAmount = totalCommercialAmount + num;
+				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsume");
+			}
+		}
+		System.out.println("Total Domestic units consumed in "+city+" are : "+totalDomesticUnits);
+		System.out.println("Total Amount of Domestic units  in "+city+" are : "+totalDomesticAmount);
+		System.out.println("Total Commercial units consumed in "+city+" are : "+totalCommercialUnits);
+		System.out.println("Total Amount of Commercial units  in "+city+" are : "+totalCommercialAmount);
+		System.out.println("Total Units consumed in "+city+" are : "+(totalDomesticUnits+totalCommercialUnits));
+		System.out.println("Total Bill Amount in "+city+" is : "+(totalDomesticAmount+totalCommercialAmount));
+		System.out.println("---------------------END------------------------");
+		
+	}
+	
+	public static void generateBillsForAnArea() throws ClassNotFoundException, SQLException {
+		int totalCommercialUnits = 0, totalCommercialAmount = 0;
+		int totalDomesticUnits = 0, totalDomesticAmount = 0;
+		Connection con = MyConnection.getConnection();
+		Statement st = con.createStatement();
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String area;
+		System.out.print("Enter area to generate bills : ");
+		area = sc.nextLine();
+		String areaUpper = area.toUpperCase();
+		System.out.println("----------------"+areaUpper+" BILL------------------");
+		ResultSet result = st.executeQuery(" select c.consumerid,b.billid,b.unitsconsume,c.connectiontype,c.consumername,b.year,b.month,c.area from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"+area+"'");
+		while(result.next()) {
+			System.out.println("Bill Number : "+result.getInt("billid"));
+			System.out.println("Consumer id : "+result.getInt("consumerid"));
+			System.out.println("Consumer name is : "+result.getString("consumername"));
+			System.out.println("Connection Type is : "+result.getString("connectiontype"));
+			System.out.println("Year : "+result.getInt("year"));
+			System.out.println("Month : "+result.getString("month"));
+			System.out.println("Units Consumed : "+result.getInt("unitsconsume"));
+			if(result.getString("connectiontype").equalsIgnoreCase("domestic")) {
+				int n = 2*result.getInt("unitsconsume");
+				totalDomesticAmount = totalDomesticAmount + n;
+				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsume");
+			}
+			if(result.getString("connection").equalsIgnoreCase("commercial")) {
+				int num = 4*result.getInt("unitssonsume");
+				totalCommercialAmount = totalCommercialAmount + num;
+				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsume");
+			}
+		}
+		System.out.println("Total Domestic units consumed in "+area+" are : "+totalDomesticUnits);
+		System.out.println("Total Amount of Domestic units  in "+area+" are : "+totalDomesticAmount);
+		System.out.println("Total Commercial units consumed in "+area+" are : "+totalCommercialUnits);
+		System.out.println("Total Amount of Commercial units  in "+area+" are : "+totalCommercialAmount);
+		System.out.println("Total Units consumed in "+area+" are : "+(totalDomesticUnits+totalCommercialUnits));
+		System.out.println("Total Bill Amount in "+area+" is : "+(totalDomesticAmount+totalCommercialAmount));
+		System.out.println("-----------------------END-----------------------");
+	}
 	public static void addUnitsConsumed() throws ClassNotFoundException, SQLException {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
@@ -29,6 +111,7 @@ public class JDBC1 {
 	public static void generateBillsForAllCustomers() throws ClassNotFoundException, SQLException {
 		Connection con = MyConnection.getConnection();
 		Statement st = con.createStatement();
+		System.out.println("-------------BILLS OF ALL CUSTOMERS-------------");
 		ResultSet result = st.executeQuery("select c.consumerid as consumerid,b.billid as bid,b.unitsconsume as units,b.year as year,b.month as month,c.connectiontype as connection from bill b join consumer c on b.consumerid=c.consumerid;");
 		while(result.next()) {
 			System.out.println("Consumer id : "+result.getInt("consumerid"));
@@ -45,18 +128,21 @@ public class JDBC1 {
 				int totalAmount = 4*result.getInt("units");
 				System.out.println("Total Amount : "+totalAmount);
 			}
-			
 		}
+		System.out.println("-----------------------END-----------------------");
 	}
 	
+	@SuppressWarnings("resource")
 	public static void generateBillByMonth() throws ClassNotFoundException, SQLException {
 		int totalCommercialUnits = 0, totalCommercialAmount = 0;
 		int totalDomesticUnits = 0, totalDomesticAmount = 0;
 		Connection con = MyConnection.getConnection();
 		Statement st = con.createStatement();
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the month : ");
+		System.out.print("Enter the month : ");
 		String month = sc.nextLine();
+		String monthUpper = month.toUpperCase();
+		System.out.println("----------------"+monthUpper+" BILL------------------");
 		ResultSet result2 = st.executeQuery("select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.month = "+month+"");
 		while(result2.next()) {
 			System.out.println("Consumer id : "+result2.getInt("consumerid"));
@@ -80,6 +166,7 @@ public class JDBC1 {
 		System.out.println("Total Amount of Commercial units  in "+month+" are : "+totalCommercialAmount);
 		System.out.println("Total Units consumed in "+month+" are : "+(totalDomesticUnits+totalCommercialUnits));
 		System.out.println("Total Amount in "+month+" is : "+(totalDomesticAmount+totalCommercialAmount));
+		System.out.println("-----------------------END-----------------------");
 	}
 	
 	
@@ -89,8 +176,9 @@ public class JDBC1 {
 		Connection con = MyConnection.getConnection();
 		Statement st = con.createStatement();
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the year : ");
-		String year = sc.nextLine();
+		System.out.print("Enter the year : ");
+		int year = sc.nextInt();
+		System.out.println("----------------"+year+" BILL------------------");
 		ResultSet result2 = st.executeQuery("select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.month = "+year+"");
 		while(result2.next()) {
 			System.out.println("Consumer id : "+result2.getInt("consumerid"));
@@ -114,6 +202,7 @@ public class JDBC1 {
 		System.out.println("Total Amount of Commercial units  in "+year+" are : "+totalCommercialAmount);
 		System.out.println("Total Units consumed in "+year+" are : "+(totalDomesticUnits+totalCommercialUnits));
 		System.out.println("Total Amount in "+year+" is : "+(totalDomesticAmount+totalCommercialAmount));
+		System.out.println("-----------------------END-----------------------");
 	}
 
 

@@ -3,7 +3,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import jdbc.JDBC1;
+import jdbc.Admin;
 public class MainClass {
 	public static boolean validateAdmin(int adminId, String password) {
 		HashMap<Integer,String> adminDetails = new HashMap<Integer,String>();
@@ -19,6 +19,7 @@ public class MainClass {
 			return false;
 		}
 	}
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		Scanner scanner = new Scanner(System.in);
 		int choice;
@@ -50,26 +51,28 @@ public class MainClass {
 					option = scanner.nextInt();
 					switch(option) {
 					case 1:{
-						JDBC1.addUnitsConsumed();
+						Admin.addUnitsConsumed();
 						break;
 					}
 					case 2:{
-						JDBC1.generateBillsForAllCustomers();
+						Admin.generateBillsForAllCustomers();
 						break;
 					}
 					case 3:{
+						Admin.generateBillsForAnArea();
 						break;
 					
 					}
 					case 4:{
+						Admin.generateBillsForACity();
 						break;
 					}
 					case 5:{
-						JDBC1.generateBillByMonth();
+						Admin.generateBillByMonth();
 						break;
 					}
 					case 6:{
-						JDBC1.generateBillByYear();
+						Admin.generateBillByYear();
 						break;
 					}
 					default:
