@@ -80,7 +80,8 @@ public class MainClass {
 						case 3:{
 							Admin.generateBillsForAnArea();
 							System.out.println("Do you want to continue y or n");
-							answer = scanner.nextLine();
+							answer = scanner.next();
+							scanner.nextLine();
 							if(answer.equalsIgnoreCase("n")) {
 								rule2 = false;
 							}else {
@@ -92,7 +93,8 @@ public class MainClass {
 						case 4:{
 							Admin.generateBillsForACity();
 							System.out.println("Do you want to continue y or n");
-							answer = scanner.nextLine();
+							answer = scanner.next();
+							scanner.nextLine();
 							if(answer.equalsIgnoreCase("n")) {
 								rule2 = false;
 							}else {
@@ -103,7 +105,8 @@ public class MainClass {
 						case 5:{
 							Admin.generateBillByMonth();
 							System.out.println("Do you want to continue y or n");
-							answer = scanner.nextLine();
+							answer = scanner.next();
+							scanner.nextLine();
 							if(answer.equalsIgnoreCase("n")) {
 								rule2 = false;
 							}else {
@@ -114,7 +117,8 @@ public class MainClass {
 						case 6:{
 							Admin.generateBillByYear();
 							System.out.println("Do you want to continue y or n");
-							answer = scanner.nextLine();
+							answer = scanner.next();
+							scanner.nextLine();
 							if(answer.equalsIgnoreCase("n")) {
 								rule2 = false;
 							}else {
