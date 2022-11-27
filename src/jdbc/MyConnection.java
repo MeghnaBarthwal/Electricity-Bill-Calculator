@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class MyConnection {
 	public static Connection getConnection() throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		return DriverManager.getConnection("jdbc:mysql://sql6.freemysqlhosting.net/sql6580998", "sql6580998", "BbfHfDpjv9");
+		return DriverManager.getConnection("jdbc:mysql://localhost:3306/wileyproject", "root", "Vijju@9381");
 	}
 
 }

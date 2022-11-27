@@ -39,44 +39,92 @@ public class MainClass {
 				String pass = scanner.nextLine();
 				if(validateAdmin(adminId,pass)) {
 					rule = false;
+					boolean rule2 = true;
+					String answer;
 					int option;
 					System.out.println("Welcome Admin!");
-					System.out.println("Choose an option: ");
-					System.out.println("1) Add units consumed in a month for a consumer");
-					System.out.println("2) Generate bills for all consumers");
-					System.out.println("3) Generate bills for an area");
-					System.out.println("4) Generate bills for a city");
-					System.out.println("5) Generate bills for a month");
-					System.out.println("6) Generate bills for an year");
-					option = scanner.nextInt();
-					switch(option) {
-					case 1:{
-						Admin.addUnitsConsumed();
-						break;
-					}
-					case 2:{
-						Admin.generateBillsForAllCustomers();
-						break;
-					}
-					case 3:{
-						Admin.generateBillsForAnArea();
-						break;
-					
-					}
-					case 4:{
-						Admin.generateBillsForACity();
-						break;
-					}
-					case 5:{
-						Admin.generateBillByMonth();
-						break;
-					}
-					case 6:{
-						Admin.generateBillByYear();
-						break;
-					}
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + option);
+					while(rule2) {
+						System.out.println("Choose an option: ");
+						System.out.println("1) Add units consumed in a month for a consumer");
+						System.out.println("2) Generate bills for all consumers");
+						System.out.println("3) Generate bills for an area");
+						System.out.println("4) Generate bills for a city");
+						System.out.println("5) Generate bills for a month");
+						System.out.println("6) Generate bills for an year");
+						option = scanner.nextInt();
+						switch(option) {
+						case 1:{
+							Admin.addUnitsConsumed();
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.next();
+							scanner.nextLine();
+							if(answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							}else {
+								rule2 = true;
+							}
+							break;
+						}
+						case 2:{
+							Admin.generateBillsForAllCustomers();
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.next();
+							scanner.nextLine();
+							if(answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							}else {
+								rule2 = true;
+							}
+							break;
+						}
+						case 3:{
+							Admin.generateBillsForAnArea();
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.nextLine();
+							if(answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							}else {
+								rule2 = true;
+							}
+							break;
+						
+						}
+						case 4:{
+							Admin.generateBillsForACity();
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.nextLine();
+							if(answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							}else {
+								rule2 = true;
+							}
+							break;
+						}
+						case 5:{
+							Admin.generateBillByMonth();
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.nextLine();
+							if(answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							}else {
+								rule2 = true;
+							}
+							break;
+						}
+						case 6:{
+							Admin.generateBillByYear();
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.nextLine();
+							if(answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							}else {
+								rule2 = true;
+							}
+							break;
+						}
+						default:
+							throw new IllegalArgumentException("Unexpected value: " + option);
+						}
 					}
 				}else {
 					System.out.println("ERROR! entered details are wrong please enter correct details");

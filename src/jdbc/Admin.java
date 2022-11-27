@@ -20,7 +20,7 @@ public class Admin {
 		city = sc.nextLine();
 		String cityUpper = city.toUpperCase();
 		System.out.println("----------------"+cityUpper+" BILL------------------");
-		ResultSet result = st.executeQuery(" select c.consumerid,b.billid,b.unitsconsume,c.connectiontype,c.consumername,b.year,b.month,c.area from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"+city+"'");
+		ResultSet result = st.executeQuery(" select c.consumerid,b.billid,b.unitsconsume,c.connectiontype,c.consumername,b.year,b.month,c.area from bill b join consumer c on b.consumerid = c.consumerid where c.city = '"+city+"'");
 		while(result.next()) {
 			System.out.println("Bill Number : "+result.getInt("billid"));
 			System.out.println("Consumer id : "+result.getInt("consumerid"));
@@ -34,8 +34,8 @@ public class Admin {
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsume");
 			}
-			if(result.getString("connection").equalsIgnoreCase("commercial")) {
-				int num = 4*result.getInt("unitssonsume");
+			if(result.getString("connectiontype").equalsIgnoreCase("commercial")) {
+				int num = 4*result.getInt("unitsconsume");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsume");
 			}
@@ -71,24 +71,26 @@ public class Admin {
 			System.out.println("Year : "+result.getInt("year"));
 			System.out.println("Month : "+result.getString("month"));
 			System.out.println("Units Consumed : "+result.getInt("unitsconsume"));
+			System.out.println("-------------------------------");
 			if(result.getString("connectiontype").equalsIgnoreCase("domestic")) {
 				int n = 2*result.getInt("unitsconsume");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsume");
 			}
-			if(result.getString("connection").equalsIgnoreCase("commercial")) {
-				int num = 4*result.getInt("unitssonsume");
+			if(result.getString("connectiontype").equalsIgnoreCase("commercial")) {
+				int num = 4*result.getInt("unitsconsume");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsume");
 			}
 		}
+		System.out.println("---------------------------------------------------");
 		System.out.println("Total Domestic units consumed in "+area+" are : "+totalDomesticUnits);
 		System.out.println("Total Amount of Domestic units  in "+area+" are : "+totalDomesticAmount);
 		System.out.println("Total Commercial units consumed in "+area+" are : "+totalCommercialUnits);
 		System.out.println("Total Amount of Commercial units  in "+area+" are : "+totalCommercialAmount);
 		System.out.println("Total Units consumed in "+area+" are : "+(totalDomesticUnits+totalCommercialUnits));
 		System.out.println("Total Bill Amount in "+area+" is : "+(totalDomesticAmount+totalCommercialAmount));
-		System.out.println("-----------------------END-----------------------");
+		System.out.println("--------------------------END---------------------------");
 	}
 	public static void addUnitsConsumed() throws ClassNotFoundException, SQLException {
 		@SuppressWarnings("resource")
@@ -101,10 +103,12 @@ public class Admin {
 		System.out.print("Enter the year : ");
 		pst.setInt(3, sc.nextInt());
 		System.out.print("Enter the month : ");
-		pst.setString(4, sc.nextLine());
+		pst.setString(4, sc.next());
+		sc.nextLine();
 		System.out.print("Enter units consumed by consumer : ");
 		pst.setInt(2, sc.nextInt());
 		pst.executeUpdate();
+		System.out.println("Successfully Inserted!!");
 		
 	}
 	
@@ -120,6 +124,7 @@ public class Admin {
 			System.out.println("Month : "+result.getString("month"));
 			System.out.println("Connection Type : "+result.getString("connection"));
 			System.out.println("Units Consumed : "+result.getInt("units"));
+			System.out.println("-------------------------------");
 			if(result.getString("connection").equalsIgnoreCase("domestic")) {
 				int totalAmount = 2*result.getInt("units");
 				System.out.println("Total Amount : "+totalAmount);
@@ -143,23 +148,25 @@ public class Admin {
 		String month = sc.nextLine();
 		String monthUpper = month.toUpperCase();
 		System.out.println("----------------"+monthUpper+" BILL------------------");
-		ResultSet result2 = st.executeQuery("select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.month = "+month+"");
+		ResultSet result2 = st.executeQuery("select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.month = '"+month+"'");
 		while(result2.next()) {
 			System.out.println("Consumer id : "+result2.getInt("consumerid"));
 			System.out.println("Consumer name is : "+result2.getString("name"));
 			System.out.println("Connection Type is : "+result2.getString("type"));
 			System.out.println("Units Consumed : "+result2.getInt("units"));
-			if(result2.getString("connection").equalsIgnoreCase("domestic")) {
+			System.out.println("-------------------------------");
+			if(result2.getString("type").equalsIgnoreCase("domestic")) {
 				int n = 2*result2.getInt("units");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result2.getInt("units");
 			}
-			if(result2.getString("connection").equalsIgnoreCase("commercial")) {
+			if(result2.getString("type").equalsIgnoreCase("commercial")) {
 				int num = 4*result2.getInt("units");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
 		}
+		System.out.println("-----------------------------------------------");
 		System.out.println("Total Domestic units consumed in "+month+" are : "+totalDomesticUnits);
 		System.out.println("Total Amount of Domestic units  in "+month+" are : "+totalDomesticAmount);
 		System.out.println("Total Commercial units consumed in "+month+" are : "+totalCommercialUnits);
@@ -179,23 +186,25 @@ public class Admin {
 		System.out.print("Enter the year : ");
 		int year = sc.nextInt();
 		System.out.println("----------------"+year+" BILL------------------");
-		ResultSet result2 = st.executeQuery("select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.month = "+year+"");
+		ResultSet result2 = st.executeQuery("select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.year = "+year+"");
 		while(result2.next()) {
 			System.out.println("Consumer id : "+result2.getInt("consumerid"));
 			System.out.println("Consumer name is : "+result2.getString("name"));
 			System.out.println("Connection Type is : "+result2.getString("type"));
 			System.out.println("Units Consumed : "+result2.getInt("units"));
-			if(result2.getString("connection").equalsIgnoreCase("domestic")) {
+			System.out.println("-------------------------------");
+			if(result2.getString("type").equalsIgnoreCase("domestic")) {
 				int n = 2*result2.getInt("units");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result2.getInt("units");
 			}
-			if(result2.getString("connection").equalsIgnoreCase("commercial")) {
+			if(result2.getString("type").equalsIgnoreCase("commercial")) {
 				int num = 4*result2.getInt("units");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
 		}
+		System.out.println("------------------------------------------");
 		System.out.println("Total Domestic units consumed in "+year+" are : "+totalDomesticUnits);
 		System.out.println("Total Amount of Domestic units  in "+year+" are : "+totalDomesticAmount);
 		System.out.println("Total Commercial units consumed in "+year+" are : "+totalCommercialUnits);
