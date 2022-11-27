@@ -11,8 +11,10 @@ public class MyConnection {
 	// connects to database
 	private MyConnection() throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		con = DriverManager.getConnection(" jdbc:mysql://sql6.freemysqlhosting.net/sql6580998", "sql6580998",
-				"BbfHfDpjv9");
+//		con = DriverManager.getConnection(" jdbc:mysql://sql6.freemysqlhosting.net/sql6580998", "sql6580998",
+//				"BbfHfDpjv9");
+		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sampledb4", "root",
+				"root0123");
 	}
 
 	// method that return single instance of the class
@@ -27,4 +29,10 @@ public class MyConnection {
 	public Connection getConnection() throws SQLException, ClassNotFoundException {
 		return con;
 	}
+//	public static Connection getConnection() throws SQLException, ClassNotFoundException {
+//		Class.forName("com.mysql.cj.jdbc.Driver");
+//	Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sampledb4", "root",
+//			"root0123"); 
+//	return con;
+//	}
 }

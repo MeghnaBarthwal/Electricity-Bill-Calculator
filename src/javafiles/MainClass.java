@@ -1,28 +1,13 @@
 package javafiles;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Scanner;
 
-import jdbc.Admin;
+import jdbc.AdminUtility;
 import jdbc.ConsumerUtility;
 
 public class MainClass {
-	public static boolean validateAdmin(int adminId, String password) {
-		HashMap<Integer, String> adminDetails = new HashMap<Integer, String>();
-		adminDetails.put(12345, "electricity12");
-		adminDetails.put(67890, "electricity23");
-		if (adminDetails.containsKey(adminId)) {
-			if (adminDetails.get(adminId).equalsIgnoreCase(password)) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-
+	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		Scanner scanner = new Scanner(System.in);
@@ -34,15 +19,12 @@ public class MainClass {
 		choice = scanner.nextInt();
 		switch (choice) {
 			case 1: {
-				boolean rule = true;
-				while (rule) {
 					System.out.print("Enter Admin ID :");
 					int adminId = scanner.nextInt();
 					scanner.nextLine();
 					System.out.print("Enter Password :");
 					String pass = scanner.nextLine();
-					if (validateAdmin(adminId, pass)) {
-						rule = false;
+					if (Admin.validateAdmin(adminId, pass)) {
 						boolean rule2 = true;
 						String answer;
 						int option;
@@ -58,88 +40,48 @@ public class MainClass {
 							option = scanner.nextInt();
 							switch (option) {
 								case 1: {
-									Admin.addUnitsConsumed();
-									System.out.println("Do you want to continue y or n");
-									answer = scanner.next();
-									scanner.nextLine();
-									if (answer.equalsIgnoreCase("n")) {
-										rule2 = false;
-									} else {
-										rule2 = true;
-									}
-									break;
+									AdminUtility.addUnitsConsumed();
 								}
+								break;
 								case 2: {
-									Admin.generateBillsForAllCustomers();
-									System.out.println("Do you want to continue y or n");
-									answer = scanner.next();
-									scanner.nextLine();
-									if (answer.equalsIgnoreCase("n")) {
-										rule2 = false;
-									} else {
-										rule2 = true;
-									}
-									break;
+									AdminUtility.generateBillsForAllCustomers();
+									
 								}
+								break;
 								case 3: {
-									Admin.generateBillsForAnArea();
-									System.out.println("Do you want to continue y or n");
-									answer = scanner.next();
-									scanner.nextLine();
-									if (answer.equalsIgnoreCase("n")) {
-										rule2 = false;
-									} else {
-										rule2 = true;
-									}
-									break;
-
+									AdminUtility.generateBillsForAnArea();
 								}
+								break;
 								case 4: {
-									Admin.generateBillsForACity();
-									System.out.println("Do you want to continue y or n");
-									answer = scanner.next();
-									scanner.nextLine();
-									if (answer.equalsIgnoreCase("n")) {
-										rule2 = false;
-									} else {
-										rule2 = true;
-									}
-									break;
+									AdminUtility.generateBillsForACity();
 								}
+								break;
 								case 5: {
-									Admin.generateBillByMonth();
-									System.out.println("Do you want to continue y or n");
-									answer = scanner.next();
-									scanner.nextLine();
-									if (answer.equalsIgnoreCase("n")) {
-										rule2 = false;
-									} else {
-										rule2 = true;
-									}
-									break;
+									AdminUtility.generateBillByMonth();
 								}
+								break;
 								case 6: {
-									Admin.generateBillByYear();
-									System.out.println("Do you want to continue y or n");
-									answer = scanner.next();
-									scanner.nextLine();
-									if (answer.equalsIgnoreCase("n")) {
-										rule2 = false;
-									} else {
-										rule2 = true;
-									}
-									break;
+									AdminUtility.generateBillByYear();
 								}
+								break;
 								default:
-									throw new IllegalArgumentException("Unexpected value: " + option);
+									System.out.println("Invalid choice.");
+									rule2 = false;
+							}
+							System.out.println("Do you want to continue y or n");
+							answer = scanner.next();
+							scanner.nextLine();
+							if (answer.equalsIgnoreCase("n")) {
+								rule2 = false;
+							} else {
+								rule2 = true;
 							}
 						}
 					} else {
 						System.out.println("ERROR! entered details are wrong please enter correct details");
 					}
-				}
-				break;
 			}
+			break;
 			case 2: {
 				System.out.println("Choose option");
 				System.out.println("1) New User? Register");
@@ -160,11 +102,11 @@ public class MainClass {
 						Consumer cobj = ConsumerUtility.consumerLogin();
 						if (cobj == null) {
 							System.out.println("Invalid id or password");
-							return;
+							break;
 						}
+						System.out.println("Welcome " + cobj.getName());
 						String ch = "yes";
 						while (ch.equalsIgnoreCase("yes") || ch.equalsIgnoreCase("y")) {
-							System.out.println("Welcome " + cobj.getName());
 							System.out.println("Choose an option");
 							System.out.println("1. Get bill by month and year");
 							System.out.println("2. Get bills by year");
@@ -178,12 +120,14 @@ public class MainClass {
 									String month = scanner.nextLine();
 									System.out.print("Enter year: ");
 									int year = scanner.nextInt();
+									scanner.nextLine();
 									ConsumerUtility.getBillByMonth(month, year, cobj.getId());
 								}
 									break;
 								case 2: {
 									System.out.print("Enter year: ");
 									int year = scanner.nextInt();
+									scanner.nextLine();
 									ConsumerUtility.getBillsByYear(year, cobj.getId());
 								}
 									break;

@@ -14,20 +14,22 @@ public class ConsumerUtility {
 
     public static Consumer validateConsumer(int id, String password) throws SQLException, ClassNotFoundException {
         Connection con = MyConnection.getInstance().getConnection();
-        PreparedStatement pst = con.prepareStatement("Select * from consumer where id = ? and password = ?");
+        PreparedStatement pst = con.prepareStatement("Select * from consumer where consumerId = ? and password = ?");
         pst.setInt(1, id);
         pst.setString(2, password);
         ResultSet rs = pst.executeQuery();
         if (rs.next() == false)
             return null;
-        return new Consumer(rs.getInt("id"), rs.getString("name"), rs.getString("area"), rs.getString("city"),
-                rs.getString("type"), rs.getString("password"));
+        return new Consumer(rs.getInt("consumerId"), rs.getString("consumerName"), rs.getString("area"), rs.getString("city"),
+                rs.getString("connectionType"), rs.getString("password"));
     }
 
     public static Consumer newRegistration() throws ClassNotFoundException, SQLException {
         System.out.println("Registration form: ");
         System.out.print("Enter your name:");
         String name = scanner.nextLine();
+        String [] nameArray=name.split(" ");
+		String consumerAlias=nameArray[0]+ String.valueOf((int)(Math.random()*10))+String.valueOf((int)(Math.random()*20))+String.valueOf((int)(Math.random()*30));
         System.out.print("Enter your area: ");
         String area = scanner.nextLine();
         System.out.print("Enter your city: ");
@@ -37,19 +39,19 @@ public class ConsumerUtility {
         System.out.print("Set password: ");
         String password = scanner.next();
         scanner.nextLine();
-        int check = ConsumerUtility.registerConsumer(name, city, area, type, password);
+        int check = ConsumerUtility.registerConsumer(name,consumerAlias, city, area, type, password);
         if (check == 1) {
             System.out.println("Registration Successful!");
             System.out.println("\nGenerating your ConsumerId and Password");
-            return new Consumer(ConsumerUtility.getConsumerId(name, password), name, area, city, type, password);
+            return new Consumer(ConsumerUtility.getConsumerId(consumerAlias, password), name, area, city, type, password);
         }
         return null;
     }
 
-    private static int getConsumerId(String Name, String pswd) throws SQLException, ClassNotFoundException {
+    private static int getConsumerId(String aliasName, String pswd) throws SQLException, ClassNotFoundException {
         Connection con = MyConnection.getInstance().getConnection();
         CallableStatement callable = con.prepareCall("{call getNamePassword(?,?,?)}");
-        callable.setString(1, Name);
+        callable.setString(1, aliasName);
         callable.setString(2, pswd);
         callable.registerOutParameter(3, java.sql.Types.INTEGER);
         callable.executeUpdate();
@@ -57,20 +59,20 @@ public class ConsumerUtility {
         return id;
     }
 
-    private static int registerConsumer(String consumerName, String consumerCity, String consumerArea,
+    private static int registerConsumer(String consumerName,String consumerAlias, String consumerCity, String consumerArea,
             String connectionType, String password) throws ClassNotFoundException, SQLException {
         System.out.println("\nRegistring Consumer........");
         Connection con = MyConnection.getInstance().getConnection();
-        String sqlInsert = "insert into consumer (consumerName,area,city,connectionType,password) value(?,?,?,?,?)";
-        PreparedStatement pst = con.prepareStatement(sqlInsert);
-        pst.setString(1, consumerName);
-        pst.setString(2, consumerArea);
-        pst.setString(3, consumerCity);
-        pst.setString(4, connectionType);
-        pst.setString(5, password);
+        String sqlInsert="insert into Consumer (ConsumerName,consumerAlias,area,city,connectionType,password) value(?,?,?,?,?,?)";
+		PreparedStatement pst = con.prepareStatement(sqlInsert);
+		pst.setString(1,consumerName);
+		pst.setString(2,consumerAlias);
+        pst.setString(3,consumerArea);
+        pst.setString(4,consumerCity);
+        pst.setString(5,connectionType);
+        pst.setString(6,password);
         int rowAffected = pst.executeUpdate();
         pst.clearParameters();
-        con.close();
         return rowAffected;
     }
 

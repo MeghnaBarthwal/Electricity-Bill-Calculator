@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class Admin {
+public class AdminUtility {
 	public static void generateBillsForACity() throws ClassNotFoundException, SQLException {
 		int totalCommercialUnits = 0, totalCommercialAmount = 0;
 		int totalDomesticUnits = 0, totalDomesticAmount = 0;
@@ -21,7 +21,7 @@ public class Admin {
 		String cityUpper = city.toUpperCase();
 		System.out.println("----------------" + cityUpper + " BILL------------------");
 		ResultSet result = st.executeQuery(
-				" select c.consumerid,b.billid,b.unitsconsume,c.connectiontype,c.consumername,b.year,b.month,c.area from bill b join consumer c on b.consumerid = c.consumerid where c.city = '"
+				" select c.consumerid,b.billid,b.unitsConsumed,c.connectiontype,c.consumername,b.year,b.month,c.area, b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where c.city = '"
 						+ city + "'");
 		while (result.next()) {
 			System.out.println("Bill Number : " + result.getInt("billid"));
@@ -30,16 +30,17 @@ public class Admin {
 			System.out.println("Connection Type is : " + result.getString("connectiontype"));
 			System.out.println("Year : " + result.getInt("year"));
 			System.out.println("Month : " + result.getString("month"));
-			System.out.println("Units Consumed : " + result.getInt("unitsconsume"));
+			System.out.println("Units Consumed : " + result.getInt("unitsconsumed"));
+			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
 			if (result.getString("connectiontype").equalsIgnoreCase("domestic")) {
-				int n = 2 * result.getInt("unitsconsume");
+				int n = 2 * result.getInt("unitsconsumed");
 				totalDomesticAmount = totalDomesticAmount + n;
-				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsume");
+				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsumed");
 			}
 			if (result.getString("connectiontype").equalsIgnoreCase("commercial")) {
-				int num = 4 * result.getInt("unitsconsume");
+				int num = 4 * result.getInt("unitsconsumed");
 				totalCommercialAmount = totalCommercialAmount + num;
-				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsume");
+				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsumed");
 			}
 		}
 		System.out.println("Total Domestic units consumed in " + city + " are : " + totalDomesticUnits);
@@ -65,7 +66,7 @@ public class Admin {
 		String areaUpper = area.toUpperCase();
 		System.out.println("----------------" + areaUpper + " BILL------------------");
 		ResultSet result = st.executeQuery(
-				" select c.consumerid,b.billid,b.unitsconsume,c.connectiontype,c.consumername,b.year,b.month,c.area from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"
+				" select c.consumerid,b.billid,b.unitsconsumed,c.connectiontype,c.consumername,b.year,b.month,c.area,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"
 						+ area + "'");
 		while (result.next()) {
 			System.out.println("Bill Number : " + result.getInt("billid"));
@@ -74,17 +75,18 @@ public class Admin {
 			System.out.println("Connection Type is : " + result.getString("connectiontype"));
 			System.out.println("Year : " + result.getInt("year"));
 			System.out.println("Month : " + result.getString("month"));
-			System.out.println("Units Consumed : " + result.getInt("unitsconsume"));
+			System.out.println("Units Consumed : " + result.getInt("unitsconsumed"));
+			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
 			System.out.println("-------------------------------");
 			if (result.getString("connectiontype").equalsIgnoreCase("domestic")) {
-				int n = 2 * result.getInt("unitsconsume");
+				int n = 2 * result.getInt("unitsconsumed");
 				totalDomesticAmount = totalDomesticAmount + n;
-				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsume");
+				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsumed");
 			}
 			if (result.getString("connectiontype").equalsIgnoreCase("commercial")) {
-				int num = 4 * result.getInt("unitsconsume");
+				int num = 4 * result.getInt("unitsconsumed");
 				totalCommercialAmount = totalCommercialAmount + num;
-				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsume");
+				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsumed");
 			}
 		}
 		System.out.println("---------------------------------------------------");
@@ -101,7 +103,7 @@ public class Admin {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		Connection con = MyConnection.getInstance().getConnection();
-		String sqlInsert = "insert into bill(consumerId,unitsconsume,year,month) values(?,?,?,?)";
+		String sqlInsert = "insert into bill(consumerId,unitsconsumed,year,month) values(?,?,?,?)";
 		PreparedStatement pst = con.prepareStatement(sqlInsert);
 		System.out.print("Enter the consumerID of consumer : ");
 		pst.setInt(1, sc.nextInt());
@@ -122,7 +124,7 @@ public class Admin {
 		Statement st = con.createStatement();
 		System.out.println("-------------BILLS OF ALL CUSTOMERS-------------");
 		ResultSet result = st.executeQuery(
-				"select c.consumerid as consumerid,b.billid as bid,b.unitsconsume as units,b.year as year,b.month as month,c.connectiontype as connection from bill b join consumer c on b.consumerid=c.consumerid;");
+				"select c.consumerid as consumerid,b.billid as bid,b.unitsconsumed as units,b.year as year,b.month as month,c.connectiontype as connection, b.totalAmount as totalAmount from bill b join consumer c on b.consumerid=c.consumerid;");
 		while (result.next()) {
 			System.out.println("Consumer id : " + result.getInt("consumerid"));
 			System.out.println("Bill Number : " + result.getInt("bid"));
@@ -130,6 +132,7 @@ public class Admin {
 			System.out.println("Month : " + result.getString("month"));
 			System.out.println("Connection Type : " + result.getString("connection"));
 			System.out.println("Units Consumed : " + result.getInt("units"));
+			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
 			System.out.println("-------------------------------");
 			if (result.getString("connection").equalsIgnoreCase("domestic")) {
 				int totalAmount = 2 * result.getInt("units");
@@ -155,21 +158,22 @@ public class Admin {
 		String monthUpper = month.toUpperCase();
 		System.out.println("----------------" + monthUpper + " BILL------------------");
 		ResultSet result2 = st.executeQuery(
-				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.month = '"
+				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsumed as units,c.consumername as name,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.month = '"
 						+ month + "'");
 		while (result2.next()) {
 			System.out.println("Consumer id : " + result2.getInt("consumerid"));
 			System.out.println("Consumer name is : " + result2.getString("name"));
 			System.out.println("Connection Type is : " + result2.getString("type"));
 			System.out.println("Units Consumed : " + result2.getInt("units"));
+			System.out.println("Total Amount : " + result2.getInt("totlaAmount"));
 			System.out.println("-------------------------------");
 			if (result2.getString("type").equalsIgnoreCase("domestic")) {
-				int n = 2 * result2.getInt("units");
+				int n = 2 * result2.getInt("unitsConsumed");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result2.getInt("units");
 			}
 			if (result2.getString("type").equalsIgnoreCase("commercial")) {
-				int num = 4 * result2.getInt("units");
+				int num = 4 * result2.getInt("unitsConsumed");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
@@ -195,21 +199,22 @@ public class Admin {
 		int year = sc.nextInt();
 		System.out.println("----------------" + year + " BILL------------------");
 		ResultSet result2 = st.executeQuery(
-				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsume as units,c.consumername as name from bill b join consumer c on b.consumerid = c.consumerid where b.year = "
+				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsumed as units,c.consumername as name,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.year = "
 						+ year + "");
 		while (result2.next()) {
 			System.out.println("Consumer id : " + result2.getInt("consumerid"));
 			System.out.println("Consumer name is : " + result2.getString("name"));
 			System.out.println("Connection Type is : " + result2.getString("type"));
 			System.out.println("Units Consumed : " + result2.getInt("units"));
+			System.out.println("Total Amount : " + result2.getInt("totlaAmount"));
 			System.out.println("-------------------------------");
 			if (result2.getString("type").equalsIgnoreCase("domestic")) {
-				int n = 2 * result2.getInt("units");
+				int n = 2 * result2.getInt("unitsConsumed");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result2.getInt("units");
 			}
 			if (result2.getString("type").equalsIgnoreCase("commercial")) {
-				int num = 4 * result2.getInt("units");
+				int num = 4 * result2.getInt("unitsConsumed");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
@@ -223,5 +228,67 @@ public class Admin {
 		System.out.println("Total Amount in " + year + " is : " + (totalDomesticAmount + totalCommercialAmount));
 		System.out.println("-----------------------END-----------------------");
 	}
+	
+	public static void getAllBills(int id) throws ClassNotFoundException, SQLException {
+    	int totalCommercialUnits = 0, totalCommercialAmount = 0;
+		int totalDomesticUnits = 0, totalDomesticAmount = 0;
+    	Connection con = MyConnection.getInstance().getConnection();
+		Statement st = con.createStatement();
+		ResultSet result = st.executeQuery("select b.consumerid,b.billid,b.unitsconsumed,b.year,b.month,c.consumername,c.connectiontype,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.consumerid = "+id+"");
+		if (result.next() == false) {
+            System.out.println("No record found for this consumer ID.");
+            return;
+        } else {
+        	while (result.next()) {
+        		System.out.println("Bill Number : "+result.getInt("billid"));
+    			System.out.println("Consumer id : "+result.getInt("consumerid"));
+    			System.out.println("Consumer name is : "+result.getString("consumername"));
+    			System.out.println("Connection Type is : "+result.getString("connectiontype"));
+    			System.out.println("Year : "+result.getInt("year"));
+    			System.out.println("Month : "+result.getString("month"));
+    			System.out.println("Units Consumed : "+result.getInt("unitsconsumed"));
+    			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
+    			System.out.println("-------------------------------");
+    			if(result.getString("connectiontype").equalsIgnoreCase("domestic")) {
+    				int n = 2*result.getInt("unitsconsume");
+    				totalDomesticAmount = totalDomesticAmount + n;
+    				totalDomesticUnits = totalDomesticUnits + result.getInt("unitsconsumed");
+    				System.out.println("Total Domestic Units consumed are : "+totalDomesticUnits);
+    				System.out.println("Total Amount is : "+totalDomesticAmount);
+    			}
+    			if(result.getString("connectiontype").equalsIgnoreCase("commercial")) {
+    				int num = 4*result.getInt("unitsconsumed");
+    				totalCommercialAmount = totalCommercialAmount + num;
+    				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsumed");
+    				System.out.println("Total Commercial Units consumed are : "+totalCommercialUnits);
+    				System.out.println("Total Amount is : "+totalCommercialAmount);
+    			}
+        	}
+        }
+	}
+	
+	public static void generateBillByYear(int year) throws ClassNotFoundException, SQLException {
+	    Connection con = MyConnection.getInstance().getConnection();
+        PreparedStatement pst = con.prepareStatement("Select * from Bill where year = (?) ");
+        pst.setInt(1,year);
+        ResultSet rs = pst.executeQuery();	        
+        System.out.println("BillID  UnitsConsumed     Year");
+        while (rs.next()) {
+            System.out.println("  "+rs.getInt("billId") + "          " + rs.getInt("unitsConsumed") + "          " + rs.getInt("year"));
+        }
+	}
+	
+	public static void generateBillByMonth(String month, int year) throws ClassNotFoundException, SQLException {
+	    Connection con = MyConnection.getInstance().getConnection();
+        PreparedStatement pst = con.prepareStatement("Select * from Bill where month = (?) and year = (?) ");
+        pst.setString(1, month);
+        pst.setInt(2,year);
+        
+        ResultSet rs = pst.executeQuery();	        
+        System.out.println("BillID  UnitsConsumed  Month      Year");
+        while (rs.next()) {
+            System.out.println("  "+rs.getInt("billId") + "          " + rs.getInt("unitsConsumed") + "         " + rs.getInt("year") + "      "  + rs.getString("month"));
+        }
+}
 
 }
