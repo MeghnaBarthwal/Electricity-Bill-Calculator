@@ -71,7 +71,7 @@ public class MainClass {
 							System.out.println("Do you want to continue y or n");
 							answer = scanner.next();
 							scanner.nextLine();
-							if (answer.equalsIgnoreCase("n")) {
+							if (!answer.equalsIgnoreCase("y")) {
 								rule2 = false;
 							} else {
 								rule2 = true;
@@ -114,6 +114,7 @@ public class MainClass {
 							System.out.print("Enter your choice: ");
 							int option2 = scanner.nextInt();
 							scanner.nextLine();
+							System.out.println("-------------------------------");
 							switch (option2) {
 								case 1: {
 									System.out.print("Enter month: ");

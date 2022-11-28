@@ -31,7 +31,8 @@ public class AdminUtility {
 			System.out.println("Year : " + result.getInt("year"));
 			System.out.println("Month : " + result.getString("month"));
 			System.out.println("Units Consumed : " + result.getInt("unitsconsumed"));
-			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
+			System.out.println("Total Amount : " + result.getInt("totalAmount"));
+			System.out.println("-------------------------------");
 			if (result.getString("connectiontype").equalsIgnoreCase("domestic")) {
 				int n = 2 * result.getInt("unitsconsumed");
 				totalDomesticAmount = totalDomesticAmount + n;
@@ -76,7 +77,7 @@ public class AdminUtility {
 			System.out.println("Year : " + result.getInt("year"));
 			System.out.println("Month : " + result.getString("month"));
 			System.out.println("Units Consumed : " + result.getInt("unitsconsumed"));
-			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
+			System.out.println("Total Amount : " + result.getInt("totalAmount"));
 			System.out.println("-------------------------------");
 			if (result.getString("connectiontype").equalsIgnoreCase("domestic")) {
 				int n = 2 * result.getInt("unitsconsumed");
@@ -132,16 +133,16 @@ public class AdminUtility {
 			System.out.println("Month : " + result.getString("month"));
 			System.out.println("Connection Type : " + result.getString("connection"));
 			System.out.println("Units Consumed : " + result.getInt("units"));
-			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
+			System.out.println("Total Amount : " + result.getInt("totalAmount"));
 			System.out.println("-------------------------------");
-			if (result.getString("connection").equalsIgnoreCase("domestic")) {
-				int totalAmount = 2 * result.getInt("units");
-				System.out.println("Total Amount : " + totalAmount);
-			}
-			if (result.getString("connection").equalsIgnoreCase("commercial")) {
-				int totalAmount = 4 * result.getInt("units");
-				System.out.println("Total Amount : " + totalAmount);
-			}
+//			if (result.getString("connection").equalsIgnoreCase("domestic")) {
+////				int totalAmount = 2 * result.getInt("units");
+//				System.out.println("Total Amount : " + totalAmount);
+//			}
+//			if (result.getString("connection").equalsIgnoreCase("commercial")) {
+//				int totalAmount = 4 * result.getInt("units");
+//				System.out.println("Total Amount : " + totalAmount);
+//			}
 		}
 		System.out.println("-----------------------END-----------------------");
 	}
@@ -165,15 +166,15 @@ public class AdminUtility {
 			System.out.println("Consumer name is : " + result2.getString("name"));
 			System.out.println("Connection Type is : " + result2.getString("type"));
 			System.out.println("Units Consumed : " + result2.getInt("units"));
-			System.out.println("Total Amount : " + result2.getInt("totlaAmount"));
+			System.out.println("Total Amount : " + result2.getInt("totalAmount"));
 			System.out.println("-------------------------------");
 			if (result2.getString("type").equalsIgnoreCase("domestic")) {
-				int n = 2 * result2.getInt("unitsConsumed");
+				int n = 2 * result2.getInt("units");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result2.getInt("units");
 			}
 			if (result2.getString("type").equalsIgnoreCase("commercial")) {
-				int num = 4 * result2.getInt("unitsConsumed");
+				int num = 4 * result2.getInt("units");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
@@ -206,15 +207,15 @@ public class AdminUtility {
 			System.out.println("Consumer name is : " + result2.getString("name"));
 			System.out.println("Connection Type is : " + result2.getString("type"));
 			System.out.println("Units Consumed : " + result2.getInt("units"));
-			System.out.println("Total Amount : " + result2.getInt("totlaAmount"));
+			System.out.println("Total Amount : " + result2.getInt("totalAmount"));
 			System.out.println("-------------------------------");
 			if (result2.getString("type").equalsIgnoreCase("domestic")) {
-				int n = 2 * result2.getInt("unitsConsumed");
+				int n = 2 * result2.getInt("units");
 				totalDomesticAmount = totalDomesticAmount + n;
 				totalDomesticUnits = totalDomesticUnits + result2.getInt("units");
 			}
 			if (result2.getString("type").equalsIgnoreCase("commercial")) {
-				int num = 4 * result2.getInt("unitsConsumed");
+				int num = 4 * result2.getInt("units");
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
@@ -247,7 +248,7 @@ public class AdminUtility {
     			System.out.println("Year : "+result.getInt("year"));
     			System.out.println("Month : "+result.getString("month"));
     			System.out.println("Units Consumed : "+result.getInt("unitsconsumed"));
-    			System.out.println("Total Amount : " + result.getInt("totlaAmount"));
+    			System.out.println("Total Amount : " + result.getInt("totalAmount"));
     			System.out.println("-------------------------------");
     			if(result.getString("connectiontype").equalsIgnoreCase("domestic")) {
     				int n = 2*result.getInt("unitsconsume");
@@ -266,29 +267,4 @@ public class AdminUtility {
         	}
         }
 	}
-	
-	public static void generateBillByYear(int year) throws ClassNotFoundException, SQLException {
-	    Connection con = MyConnection.getInstance().getConnection();
-        PreparedStatement pst = con.prepareStatement("Select * from Bill where year = (?) ");
-        pst.setInt(1,year);
-        ResultSet rs = pst.executeQuery();	        
-        System.out.println("BillID  UnitsConsumed     Year");
-        while (rs.next()) {
-            System.out.println("  "+rs.getInt("billId") + "          " + rs.getInt("unitsConsumed") + "          " + rs.getInt("year"));
-        }
-	}
-	
-	public static void generateBillByMonth(String month, int year) throws ClassNotFoundException, SQLException {
-	    Connection con = MyConnection.getInstance().getConnection();
-        PreparedStatement pst = con.prepareStatement("Select * from Bill where month = (?) and year = (?) ");
-        pst.setString(1, month);
-        pst.setInt(2,year);
-        
-        ResultSet rs = pst.executeQuery();	        
-        System.out.println("BillID  UnitsConsumed  Month      Year");
-        while (rs.next()) {
-            System.out.println("  "+rs.getInt("billId") + "          " + rs.getInt("unitsConsumed") + "         " + rs.getInt("year") + "      "  + rs.getString("month"));
-        }
-}
-
 }
