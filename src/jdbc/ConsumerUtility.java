@@ -92,19 +92,26 @@ public class ConsumerUtility {
     public static void getBillByMonth(String month, int year, int id) throws ClassNotFoundException, SQLException {
         Connection con = MyConnection.getInstance().getConnection();
         PreparedStatement pst = con
-                .prepareStatement("Select * from Bill where month = ? and year = ? and consumerId = ?");
+                .prepareStatement("Select billId, consumerId, unitsConsumed, year, month, totalAmount from Bill where month = ? and year = ? and consumerId = ?;");
         pst.setString(1, month);
         pst.setInt(2, year);
         pst.setInt(3, id);
         ResultSet rs = pst.executeQuery();
-        if (rs.next() == false) {
+        PreparedStatement pst2 = con
+                .prepareStatement("Select count(*) as count from Bill where month = ? and year = ? and consumerId = ?;");
+        pst2.setString(1, month);
+        pst2.setInt(2, year);
+        pst2.setInt(3, id);
+        ResultSet rs2 = pst2.executeQuery();
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
             System.out.println("No record find for this month and year.");
             return;
         }
         System.out.println("BillID  UnitsConsumed  Month   Year");
         while (rs.next()) {
-            System.out.println(rs.getInt("billId") + " " + rs.getInt("unitsConsumed") + " " + rs.getInt("year") + " "
-                    + rs.getString("month"));
+            System.out.println(rs.getInt("billId") + "    " + rs.getInt("unitsConsumed") + "     " + rs.getString("month") + "      "
+                    + rs.getInt("year"));
         }
     }
 
@@ -114,6 +121,16 @@ public class ConsumerUtility {
         pst.setInt(1,year);
         pst.setInt(2, id);
         ResultSet rs = pst.executeQuery();	        
+        PreparedStatement pst2 = con
+                .prepareStatement("Select count(*) as count from Bill where year = ? and consumerId = ?");
+        pst2.setInt(1,year);
+        pst2.setInt(2, id);
+        ResultSet rs2 = pst2.executeQuery();
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No record find for this year.");
+            return;
+        }
         System.out.println("BillID  UnitsConsumed     Year     Amount");
         while (rs.next()) {
             System.out.println("  "+rs.getInt("billId") + "      " + rs.getInt("unitsConsumed") + "         " + rs.getInt("year")+ "         " + rs.getInt("totalAmount"));
@@ -127,8 +144,12 @@ public class ConsumerUtility {
     	Connection con = MyConnection.getInstance().getConnection();
 		Statement st = con.createStatement();
 		ResultSet result = st.executeQuery("select b.consumerid,b.billid,b.unitsconsumed,b.year,b.month,c.consumername,c.connectiontype, b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.consumerid = "+id+"");
-		if (result.next() == false) {
-            System.out.println("No record found for this consumer ID.");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid = c.consumerid where b.consumerid = "+id+"");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No records find");
             return;
         } else {
         	while (result.next()) {

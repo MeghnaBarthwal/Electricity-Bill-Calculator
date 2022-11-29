@@ -1,6 +1,7 @@
 package jdbc;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,8 +22,15 @@ public class AdminUtility {
 		String cityUpper = city.toUpperCase();
 		System.out.println("----------------" + cityUpper + " BILL------------------");
 		ResultSet result = st.executeQuery(
-				" select c.consumerid,b.billid,b.unitsConsumed,c.connectiontype,c.consumername,b.year,b.month,c.area, b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where c.city = '"
-						+ city + "'");
+				" select c.consumerid,b.billid,b.unitsConsumed,c.connectiontype,c.consumername,b.year,b.month,c.area, b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where c.city = '"+ city + "'");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid = c.consumerid where c.city = '"+ city +"'");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No records found.");
+            return;
+        } else {
 		while (result.next()) {
 			System.out.println("Bill Number : " + result.getInt("billid"));
 			System.out.println("Consumer id : " + result.getInt("consumerid"));
@@ -43,6 +51,7 @@ public class AdminUtility {
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsumed");
 			}
+		}
 		}
 		System.out.println("Total Domestic units consumed in " + city + " are : " + totalDomesticUnits);
 		System.out.println("Total Amount of Domestic units  in " + city + " are : " + totalDomesticAmount);
@@ -69,6 +78,14 @@ public class AdminUtility {
 		ResultSet result = st.executeQuery(
 				" select c.consumerid,b.billid,b.unitsconsumed,c.connectiontype,c.consumername,b.year,b.month,c.area,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"
 						+ area + "'");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid = c.consumerid where c.area = '"+ area +"'");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No records found !!.");
+            return;
+        } else {
 		while (result.next()) {
 			System.out.println("Bill Number : " + result.getInt("billid"));
 			System.out.println("Consumer id : " + result.getInt("consumerid"));
@@ -89,6 +106,7 @@ public class AdminUtility {
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result.getInt("unitsconsumed");
 			}
+		}
 		}
 		System.out.println("---------------------------------------------------");
 		System.out.println("Total Domestic units consumed in " + area + " are : " + totalDomesticUnits);
@@ -126,6 +144,14 @@ public class AdminUtility {
 		System.out.println("-------------BILLS OF ALL CUSTOMERS-------------");
 		ResultSet result = st.executeQuery(
 				"select c.consumerid as consumerid,b.billid as bid,b.unitsconsumed as units,b.year as year,b.month as month,c.connectiontype as connection, b.totalAmount as totalAmount from bill b join consumer c on b.consumerid=c.consumerid;");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid=c.consumerid;");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No record find for this month and year.");
+            return;
+        } else {
 		while (result.next()) {
 			System.out.println("Consumer id : " + result.getInt("consumerid"));
 			System.out.println("Bill Number : " + result.getInt("bid"));
@@ -144,6 +170,7 @@ public class AdminUtility {
 //				System.out.println("Total Amount : " + totalAmount);
 //			}
 		}
+        }
 		System.out.println("-----------------------END-----------------------");
 	}
 
@@ -156,15 +183,26 @@ public class AdminUtility {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Enter the month : ");
 		String month = sc.nextLine();
+//		System.out.println("Enter the year : ");
+//		int year = sc.nextInt();
 		String monthUpper = month.toUpperCase();
-		System.out.println("----------------" + monthUpper + " BILL------------------");
+		System.out.println("----------------" + monthUpper + "BILL------------------");
 		ResultSet result2 = st.executeQuery(
-				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsumed as units,c.consumername as name,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.month = '"
+				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsumed as units,c.consumername as name,b.totalAmount, b.year from bill b join consumer c on b.consumerid = c.consumerid where b.month = '"
 						+ month + "'");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid = c.consumerid where b.month = '"+ month +"'");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No record find for this month and year.");
+            return;
+        } else {
 		while (result2.next()) {
 			System.out.println("Consumer id : " + result2.getInt("consumerid"));
 			System.out.println("Consumer name is : " + result2.getString("name"));
 			System.out.println("Connection Type is : " + result2.getString("type"));
+			System.out.println("year is : "+result2.getInt("year"));
 			System.out.println("Units Consumed : " + result2.getInt("units"));
 			System.out.println("Total Amount : " + result2.getInt("totalAmount"));
 			System.out.println("-------------------------------");
@@ -178,6 +216,7 @@ public class AdminUtility {
 				totalCommercialAmount = totalCommercialAmount + num;
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
+		}
 		}
 		System.out.println("-----------------------------------------------");
 		System.out.println("Total Domestic units consumed in " + month + " are : " + totalDomesticUnits);
@@ -200,9 +239,18 @@ public class AdminUtility {
 		int year = sc.nextInt();
 		System.out.println("----------------" + year + " BILL------------------");
 		ResultSet result2 = st.executeQuery(
-				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsumed as units,c.consumername as name,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.year = "
-						+ year + "");
+				"select c.consumerid as consumerid,c.connectiontype as type,b.unitsconsumed as units,c.consumername as name,b.totalAmount, b.billId as billId from bill b join consumer c on b.consumerid = c.consumerid where b.year = "
+						+ year + " order by b.billId");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid = c.consumerid where b.year ="+year+"");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No records found !!");
+            return;
+        } else {
 		while (result2.next()) {
+			System.out.println("Bill id : " + result2.getInt("billId"));
 			System.out.println("Consumer id : " + result2.getInt("consumerid"));
 			System.out.println("Consumer name is : " + result2.getString("name"));
 			System.out.println("Connection Type is : " + result2.getString("type"));
@@ -220,6 +268,7 @@ public class AdminUtility {
 				totalCommercialUnits = totalCommercialUnits + result2.getInt("units");
 			}
 		}
+		}
 		System.out.println("------------------------------------------");
 		System.out.println("Total Domestic units consumed in " + year + " are : " + totalDomesticUnits);
 		System.out.println("Total Amount of Domestic units  in " + year + " are : " + totalDomesticAmount);
@@ -236,8 +285,12 @@ public class AdminUtility {
     	Connection con = MyConnection.getInstance().getConnection();
 		Statement st = con.createStatement();
 		ResultSet result = st.executeQuery("select b.consumerid,b.billid,b.unitsconsumed,b.year,b.month,c.consumername,c.connectiontype,b.totalAmount from bill b join consumer c on b.consumerid = c.consumerid where b.consumerid = "+id+"");
-		if (result.next() == false) {
-            System.out.println("No record found for this consumer ID.");
+		Statement st2 = con
+                .createStatement();
+        ResultSet rs2 = st2.executeQuery("select count(*) as count from bill b join consumer c on b.consumerid = c.consumerid where b.consumerid = "+id+"");
+        rs2.next();
+        if (rs2.getInt(1)== 0) {
+            System.out.println("No records found !!");
             return;
         } else {
         	while (result.next()) {

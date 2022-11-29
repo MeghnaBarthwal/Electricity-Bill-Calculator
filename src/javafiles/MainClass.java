@@ -16,12 +16,20 @@ public class MainClass {
 		System.out.println("Choose your role");
 		System.out.println("1) Administrator");
 		System.out.println("2) Consumer");
+		System.out.println("3) Exit");
 		choice = scanner.nextInt();
+		scanner.nextLine();
 		switch (choice) {
 			case 1: {
 					System.out.print("Enter Admin ID :");
-					int adminId = scanner.nextInt();
-					scanner.nextLine();
+					String id = scanner.nextLine();
+					int adminId=0;
+					try {
+						adminId=Integer.parseInt(id);
+					}catch(Exception e) {
+						System.out.println("Please enter a valid adminId.\n\n");
+						break;
+					}
 					System.out.print("Enter Password :");
 					String pass = scanner.nextLine();
 					if (Admin.validateAdmin(adminId, pass)) {
@@ -139,7 +147,7 @@ public class MainClass {
 								default:
 									System.out.println("Invalid choice");
 							}
-							System.out.print("Do you wish to continue?");
+							System.out.print("Do you wish to continue? y or n");
 							ch = scanner.nextLine();
 						}
 					}
@@ -150,10 +158,17 @@ public class MainClass {
 				}
 			}
 				break;
+			case 3:{
+				System.out.println("Thank you for using Electricity Bill Calculator.\n");
+				return;
+			}
 			default:
 				System.out.println("Invalid choice");
 		}
-		System.out.println("Thank you for using Electricity Bill Calculator.");
+		System.out.println("\nThank you for using Electricity Bill Calculator.");
+		System.out.println("Directing you to the home page....\n");
+		System.out.println("*********************************************************************\n");
+		MainClass.main(args);
 		return;
 	}
 }

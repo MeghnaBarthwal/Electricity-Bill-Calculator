@@ -1,6 +1,8 @@
 package javafiles;
 
-public class Consumer {
+import java.util.Objects;
+
+public class Consumer{
     private int id;
     private String name, area, city, type, password;
 
@@ -65,5 +67,24 @@ public class Consumer {
     public String toString() {
         return "Consumer [id=" + id + ", name=" + name + ", area=" + area + ", city=" + city + ", type=" + type + "]";
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(area, city, id, name, password, type);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Consumer other = (Consumer) obj;
+		return this.area.equals(other.area)&& this.city.equals(other.city) && id == other.id
+				&& this.name.equals(other.name)&& this.password.equals(other.password)
+				&& this.type.equals(other.type);
+	}
 
 }
